@@ -22,6 +22,14 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return doGetBean(name, args);
     }
 
+    /**
+     * 真正用来获取bean实例的方法
+     *
+     * @param name bean名称
+     * @param args bean构造器参数
+     * @param <T>  泛型
+     * @return bean实例
+     */
     protected <T> T doGetBean(String name, Object[] args) {
         Object bean = getSingleton(name);
         if (bean != null) {
@@ -31,8 +39,23 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return (T) createBean(name, beanDefinition, args);
     }
 
-
+    /**
+     * 根据bean名称获取bean定义信息
+     *
+     * @param beanName bean名称
+     * @return bean定义信息
+     * @throws BeansException 异常信息
+     */
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;
 
+    /**
+     * 创建bean实例
+     *
+     * @param name           bean名称
+     * @param beanDefinition bean定义信息
+     * @param args           bean构造器参数
+     * @return bean实例
+     * @throws BeansException 异常信息
+     */
     protected abstract Object createBean(String name, BeanDefinition beanDefinition, Object[] args) throws BeansException;
 }

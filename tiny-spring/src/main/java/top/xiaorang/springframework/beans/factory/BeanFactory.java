@@ -23,7 +23,7 @@ public interface BeanFactory {
      * 根据bean名称和构造器参数获取bean实例对象
      *
      * @param name bean名称
-     * @param args 构造器参数
+     * @param args bean构造器参数
      * @return bean实例对象
      * @throws BeansException bean异常信息
      */

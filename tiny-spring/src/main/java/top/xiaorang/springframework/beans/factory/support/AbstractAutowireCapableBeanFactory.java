@@ -1,7 +1,11 @@
 package top.xiaorang.springframework.beans.factory.support;
 
+import cn.hutool.core.bean.BeanUtil;
 import top.xiaorang.springframework.beans.BeansException;
+import top.xiaorang.springframework.beans.PropertyValue;
+import top.xiaorang.springframework.beans.PropertyValues;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
+import top.xiaorang.springframework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
 
@@ -20,6 +24,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object bean;
         try {
             bean = createBeanInstance(name, beanDefinition, args);
+            applyPropertyValues(name, beanDefinition, bean);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
@@ -27,6 +32,39 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return bean;
     }
 
+    /**
+     * bean属性填充
+     *
+     * @param beanName       bean名称
+     * @param beanDefinition bean定义信息
+     * @param bean           bean实例
+     */
+    protected void applyPropertyValues(String beanName, BeanDefinition beanDefinition, Object bean) {
+        try {
+            PropertyValues propertyValues = beanDefinition.getPropertyValues();
+            for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
+                String name = propertyValue.getName();
+                Object value = propertyValue.getValue();
+                if (value instanceof BeanReference) {
+                    BeanReference beanReference = (BeanReference) value;
+                    // A 依赖 B，获取 B 的实例化
+                    value = getBean(beanReference.getBeanName());
+                }
+                BeanUtil.setFieldValue(bean, name, value);
+            }
+        } catch (Exception e) {
+            throw new BeansException("Error setting property values：" + beanName);
+        }
+    }
+
+    /**
+     * bean实例化
+     *
+     * @param name           bean名称
+     * @param beanDefinition bean定义信息
+     * @param args           bean构造器参数
+     * @return bean实例
+     */
     protected Object createBeanInstance(String name, BeanDefinition beanDefinition, Object[] args) {
         Constructor<?> constructorToUse = null;
         Class<?> clazz = beanDefinition.getBeanClass();
