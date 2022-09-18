@@ -20,11 +20,7 @@ public class ApiTest {
         // 注册bean定义信息
         beanFactory.registerBeanDefinition("userService", new BeanDefinition(UserService.class));
         // 获取bean实例
-        UserService userService = (UserService) beanFactory.getBean("userService");
+        UserService userService = (UserService) beanFactory.getBean("userService", "小让");
         userService.queryUserInfo();
-        // 第二次获取bean实例
-        UserService userService2 = (UserService) beanFactory.getBean("userService");
-        // 判断获取出来的对象是不是单实例bean
-        System.out.println("是不是单实例bean？" + (userService == userService2 ? "是" : "不是"));
     }
 }

@@ -11,4 +11,11 @@
 
     <artifactId>tiny-spring</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
