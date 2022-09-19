@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import top.xiaorang.springframework.beans.BeansException;
 import top.xiaorang.springframework.beans.PropertyValue;
 import top.xiaorang.springframework.beans.PropertyValues;
+import top.xiaorang.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
 import top.xiaorang.springframework.beans.factory.config.BeanReference;
 
@@ -16,7 +17,7 @@ import java.lang.reflect.Constructor;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 2:35
  */
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
     @Override

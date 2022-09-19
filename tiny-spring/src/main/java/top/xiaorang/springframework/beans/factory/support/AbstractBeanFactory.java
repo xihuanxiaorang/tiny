@@ -1,8 +1,8 @@
 package top.xiaorang.springframework.beans.factory.support;
 
 import top.xiaorang.springframework.beans.BeansException;
-import top.xiaorang.springframework.beans.factory.BeanFactory;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
+import top.xiaorang.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 /**
  * @author liulei
@@ -11,7 +11,7 @@ import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 2:30
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     @Override
     public Object getBean(String name) throws BeansException {
         return doGetBean(name, null);
