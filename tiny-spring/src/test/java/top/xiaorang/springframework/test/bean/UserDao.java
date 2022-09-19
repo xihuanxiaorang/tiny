@@ -13,10 +13,16 @@ import java.util.Map;
 public class UserDao {
     private static final Map<String, String> userMap = new HashMap<>();
 
-    static {
+    public void initDataMethod() {
+        System.out.println("执行：init-method");
         userMap.put("1001", "小让");
         userMap.put("1002", "小星");
         userMap.put("1003", "小白");
+    }
+
+    public void destroyDataMethod() {
+        System.out.println("执行：destroy-method");
+        userMap.clear();
     }
 
     public String queryUserName(String uId) {

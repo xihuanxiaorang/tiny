@@ -27,6 +27,16 @@ import java.io.InputStream;
  * @date 2022/9/19 16:48
  */
 public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
+    public static final String BEAN_ELEMENT = "bean";
+    public static final String NAME_ATTRIBUTE = "name";
+    public static final String ID_ATTRIBUTE = "id";
+    public static final String CLASS_ATTRIBUTE = "class";
+    public static final String INIT_METHOD_ATTRIBUTE = "init-method";
+    public static final String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
+    public static final String PROPERTY_ELEMENT = "property";
+    public static final String REF_ATTRIBUTE = "ref";
+    public static final String VALUE_ATTRIBUTE = "value";
+
     public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
         super(registry);
     }
@@ -78,7 +88,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             Node node = nl.item(i);
             if (node instanceof Element) {
                 Element ele = (Element) node;
-                if ("bean".equals(ele.getNodeName())) {
+                if (BEAN_ELEMENT.equals(ele.getNodeName())) {
                     processBeanDefinition(ele);
                 }
             }
@@ -86,15 +96,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     }
 
     private void processBeanDefinition(Element ele) throws ClassNotFoundException {
-        String id = ele.getAttribute("id");
-        String nameAttr = ele.getAttribute("name");
-        String className = ele.getAttribute("class").trim();
+        String id = ele.getAttribute(ID_ATTRIBUTE);
+        String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
+        String className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
         Class<?> beanClass = Class.forName(className);
         String beanName = StrUtil.isNotEmpty(id) ? id : nameAttr;
         if (StrUtil.isEmpty(beanName)) {
             beanName = StrUtil.lowerFirst(beanClass.getSimpleName());
         }
         BeanDefinition beanDefinition = new BeanDefinition(beanClass);
+        parseBeanDefinitionAttributes(ele, beanDefinition);
         parsePropertyElements(ele, beanDefinition);
         if (getRegistry().containsBeanDefinition(beanName)) {
             throw new BeansException("Duplicate beanName[" + beanName + "] is not allowed");
@@ -102,20 +113,31 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         getRegistry().registerBeanDefinition(beanName, beanDefinition);
     }
 
+    private void parseBeanDefinitionAttributes(Element ele, BeanDefinition beanDefinition) {
+        if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
+            String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
+            beanDefinition.setInitMethodName(initMethodName);
+        }
+        if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) {
+            String destroyMethodName = ele.getAttribute(DESTROY_METHOD_ATTRIBUTE);
+            beanDefinition.setDestroyMethodName(destroyMethodName);
+        }
+    }
+
     private void parsePropertyElements(Element beanEle, BeanDefinition bd) {
         NodeList nl = beanEle.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
-            if (node instanceof Element && "property".equals(node.getNodeName())) {
+            if (node instanceof Element && PROPERTY_ELEMENT.equals(node.getNodeName())) {
                 parsePropertyElement((Element) node, bd);
             }
         }
     }
 
     private void parsePropertyElement(Element ele, BeanDefinition bd) {
-        String propertyName = ele.getAttribute("name");
-        String attrRef = ele.getAttribute("ref");
-        String attrValue = ele.getAttribute("value");
+        String propertyName = ele.getAttribute(NAME_ATTRIBUTE);
+        String attrRef = ele.getAttribute(REF_ATTRIBUTE);
+        String attrValue = ele.getAttribute(VALUE_ATTRIBUTE);
         Object value = StrUtil.isNotEmpty(attrRef) ? new BeanReference(attrRef) : attrValue;
         PropertyValue pv = new PropertyValue(propertyName, value);
         bd.getPropertyValues().addPropertyValue(pv);

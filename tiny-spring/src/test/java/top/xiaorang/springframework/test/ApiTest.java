@@ -37,7 +37,7 @@ public class ApiTest {
     }
 
     @Test
-    public void test_BeanFactory() {
+    public void test_beanFactory() {
         // 创建bean工厂
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         // 注册UserDao的bean定义信息
@@ -90,10 +90,23 @@ public class ApiTest {
     }
 
     @Test
-    public void test_BeanFactoryPostProcessorAndBeanPostProcessor() {
+    public void test_beanFactoryPostProcessorAndBeanPostProcessor() {
 //        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
         UserService userService = applicationContext.getBean("userService", UserService.class);
         userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_initMethodAndDestroyMethod() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_hook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close")));
     }
 }

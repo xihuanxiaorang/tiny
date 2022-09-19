@@ -1,7 +1,9 @@
 package top.xiaorang.springframework.beans.factory.support;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import top.xiaorang.springframework.beans.BeansException;
+import top.xiaorang.springframework.beans.factory.DisposableBean;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
 import top.xiaorang.springframework.beans.factory.config.BeanPostProcessor;
 import top.xiaorang.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -62,6 +64,12 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
+    }
+
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
     }
 
     /**

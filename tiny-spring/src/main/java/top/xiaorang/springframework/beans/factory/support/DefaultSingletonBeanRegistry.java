@@ -1,7 +1,10 @@
 package top.xiaorang.springframework.beans.factory.support;
 
+import top.xiaorang.springframework.beans.BeansException;
+import top.xiaorang.springframework.beans.factory.DisposableBean;
 import top.xiaorang.springframework.beans.factory.config.SingletonBeanRegistry;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,10 +17,35 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
+    private final Map<String, DisposableBean> disposableBeans = new LinkedHashMap<>();
 
     @Override
     public Object getSingleton(String beanName) {
         return singletonObjects.get(beanName);
+    }
+
+    public void destroySingletons() {
+        String[] disposableBeanNames = disposableBeans.keySet().toArray(new String[0]);
+        for (int i = disposableBeanNames.length - 1; i >= 0; i--) {
+            String beanName = disposableBeanNames[i];
+            this.singletonObjects.remove(beanName);
+            DisposableBean disposableBean = this.disposableBeans.remove(beanName);
+            try {
+                disposableBean.destroy();
+            } catch (Exception e) {
+                throw new BeansException("Destroy method on bean with name '" + beanName + "' threw an exception", e);
+            }
+        }
+    }
+
+    /**
+     * 注册实现了DisposableBean接口的bean实例
+     *
+     * @param beanName bean名称
+     * @param bean     bean实例
+     */
+    public void registerDisposableBean(String beanName, DisposableBean bean) {
+        this.disposableBeans.put(beanName, bean);
     }
 
     /**

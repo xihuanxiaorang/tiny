@@ -1,5 +1,8 @@
 package top.xiaorang.springframework.test.bean;
 
+import top.xiaorang.springframework.beans.factory.DisposableBean;
+import top.xiaorang.springframework.beans.factory.InitializingBean;
+
 /**
  * @author liulei
  * @description
@@ -7,11 +10,21 @@ package top.xiaorang.springframework.test.bean;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 2:54
  */
-public class UserService {
+public class UserService implements InitializingBean, DisposableBean {
     private String userId;
     private String location;
     private String company;
     private UserDao userDao;
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("执行：UserService.destroy");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("执行：UserService.afterPropertiesSet");
+    }
 
     public void queryUserInfo() {
         System.out.println("查询用户信息：" + userDao.queryUserName(userId) + "," + company + "," + location);
