@@ -1,6 +1,7 @@
 package top.xiaorang.springframework.beans.factory.support;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import top.xiaorang.springframework.beans.BeansException;
 import top.xiaorang.springframework.beans.factory.DisposableBean;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+    private ClassLoader beanClassLoader = ClassUtil.getClassLoader();
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -60,6 +63,16 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         this.beanPostProcessors.remove(beanPostProcessor);
         // Add to end of list
         this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    @Override
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader beanClassLoader) {
+        this.beanClassLoader = (beanClassLoader != null ? beanClassLoader : ClassUtil.getClassLoader());
     }
 
     public List<BeanPostProcessor> getBeanPostProcessors() {

@@ -109,4 +109,14 @@ public class ApiTest {
     public void test_hook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close")));
     }
+
+    @Test
+    public void test_aware() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
+        applicationContext.registerShutdownHook();
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        userService.queryUserInfo();
+        System.out.println("ApplicationContextAware：" + userService.getApplicationContext());
+        System.out.println("BeanFactoryAware：" + userService.getBeanFactory());
+    }
 }

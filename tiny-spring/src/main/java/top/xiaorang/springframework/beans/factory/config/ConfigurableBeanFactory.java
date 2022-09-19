@@ -14,6 +14,10 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 
     String SCOPE_PROTOTYPE = "prototype";
 
+    ClassLoader getBeanClassLoader();
+
+    void setBeanClassLoader(ClassLoader beanClassLoader);
+
     /**
      * 增加bean后置处理器
      *

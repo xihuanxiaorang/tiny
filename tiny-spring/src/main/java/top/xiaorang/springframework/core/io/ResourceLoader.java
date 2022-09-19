@@ -17,4 +17,11 @@ public interface ResourceLoader {
      * @return 资源
      */
     Resource getResource(String location);
+
+    /**
+     * 获取类加载器
+     *
+     * @return 类加载器
+     */
+    ClassLoader getClassLoader();
 }

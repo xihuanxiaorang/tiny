@@ -1,7 +1,14 @@
 package top.xiaorang.springframework.test.bean;
 
+import top.xiaorang.springframework.beans.BeansException;
+import top.xiaorang.springframework.beans.factory.BeanClassLoaderAware;
+import top.xiaorang.springframework.beans.factory.BeanFactory;
+import top.xiaorang.springframework.beans.factory.BeanFactoryAware;
+import top.xiaorang.springframework.beans.factory.BeanNameAware;
 import top.xiaorang.springframework.beans.factory.DisposableBean;
 import top.xiaorang.springframework.beans.factory.InitializingBean;
+import top.xiaorang.springframework.context.ApplicationContext;
+import top.xiaorang.springframework.context.ApplicationContextAware;
 
 /**
  * @author liulei
@@ -10,7 +17,9 @@ import top.xiaorang.springframework.beans.factory.InitializingBean;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 2:54
  */
-public class UserService implements InitializingBean, DisposableBean {
+public class UserService implements InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, ApplicationContextAware {
+    private ApplicationContext applicationContext;
+    private BeanFactory beanFactory;
     private String userId;
     private String location;
     private String company;
@@ -24,6 +33,16 @@ public class UserService implements InitializingBean, DisposableBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         System.out.println("执行：UserService.afterPropertiesSet");
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        System.out.println("ClassLoader：" + classLoader);
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        System.out.println("beanName：" + name);
     }
 
     public void queryUserInfo() {
@@ -60,5 +79,23 @@ public class UserService implements InitializingBean, DisposableBean {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
     }
 }

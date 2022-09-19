@@ -5,6 +5,10 @@ import cn.hutool.core.util.StrUtil;
 import top.xiaorang.springframework.beans.BeansException;
 import top.xiaorang.springframework.beans.PropertyValue;
 import top.xiaorang.springframework.beans.PropertyValues;
+import top.xiaorang.springframework.beans.factory.Aware;
+import top.xiaorang.springframework.beans.factory.BeanClassLoaderAware;
+import top.xiaorang.springframework.beans.factory.BeanFactoryAware;
+import top.xiaorang.springframework.beans.factory.BeanNameAware;
 import top.xiaorang.springframework.beans.factory.InitializingBean;
 import top.xiaorang.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
@@ -41,6 +45,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+        invokeAwareMethods(beanName, bean);
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
         try {
             invokeInitMethods(beanName, wrappedBean, beanDefinition);
@@ -49,6 +54,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
         return wrappedBean;
+    }
+
+    private void invokeAwareMethods(String beanName, Object bean) {
+        if (bean instanceof Aware) {
+            if (bean instanceof BeanNameAware) {
+                ((BeanNameAware) bean).setBeanName(beanName);
+            }
+            if (bean instanceof BeanClassLoaderAware) {
+                ClassLoader bcl = getBeanClassLoader();
+                if (bcl != null) {
+                    ((BeanClassLoaderAware) bean).setBeanClassLoader(bcl);
+                }
+            }
+            if (bean instanceof BeanFactoryAware) {
+                ((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
+            }
+        }
     }
 
 
