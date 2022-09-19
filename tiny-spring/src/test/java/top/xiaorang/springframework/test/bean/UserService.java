@@ -9,10 +9,12 @@ package top.xiaorang.springframework.test.bean;
  */
 public class UserService {
     private String userId;
+    private String location;
+    private String company;
     private UserDao userDao;
 
     public void queryUserInfo() {
-        System.out.println("查询用户信息：" + userDao.queryUserName(userId));
+        System.out.println("查询用户信息：" + userDao.queryUserName(userId) + "," + company + "," + location);
     }
 
     public String getUserId() {
@@ -21,6 +23,22 @@ public class UserService {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public UserDao getUserDao() {

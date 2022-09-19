@@ -8,4 +8,7 @@
         <property name="company" value="腾讯"/>
         <property name="userDao" ref="userDao"/>
     </bean>
+
+    <bean class="top.xiaorang.springframework.test.common.MyBeanFactoryPostProcessor"/>
+    <bean class="top.xiaorang.springframework.test.common.MyBeanPostProcessor"/>
 </beans>

@@ -1,5 +1,6 @@
 package top.xiaorang.springframework.beans.factory.xml;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import org.w3c.dom.Document;
@@ -55,6 +56,14 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         ResourceLoader resourceLoader = getResourceLoader();
         Resource resource = resourceLoader.getResource(location);
         loadBeanDefinitions(resource);
+    }
+
+    @Override
+    public void loadBeanDefinitions(String... locations) throws BeansException {
+        Assert.notNull(locations, "Location array must not be null");
+        for (String location : locations) {
+            loadBeanDefinitions(location);
+        }
     }
 
     protected void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException {

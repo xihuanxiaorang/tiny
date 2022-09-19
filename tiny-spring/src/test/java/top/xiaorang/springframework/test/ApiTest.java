@@ -10,6 +10,8 @@ import top.xiaorang.springframework.beans.factory.config.BeanReference;
 import top.xiaorang.springframework.beans.factory.support.BeanDefinitionReader;
 import top.xiaorang.springframework.beans.factory.support.DefaultListableBeanFactory;
 import top.xiaorang.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import top.xiaorang.springframework.context.ApplicationContext;
+import top.xiaorang.springframework.context.support.ClassPathXmlApplicationContext;
 import top.xiaorang.springframework.core.io.DefaultResourceLoader;
 import top.xiaorang.springframework.core.io.Resource;
 import top.xiaorang.springframework.core.io.ResourceLoader;
@@ -84,6 +86,14 @@ public class ApiTest {
         beanDefinitionReader.loadBeanDefinitions("classpath:spring.xml");
         // 获取UserService的bean实例
         UserService userService = (UserService) beanFactory.getBean("userService");
+        userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_BeanFactoryPostProcessorAndBeanPostProcessor() {
+//        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
+        UserService userService = applicationContext.getBean("userService", UserService.class);
         userService.queryUserInfo();
     }
 }

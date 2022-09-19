@@ -1,8 +1,13 @@
 package top.xiaorang.springframework.beans.factory.support;
 
+import cn.hutool.core.lang.Assert;
 import top.xiaorang.springframework.beans.BeansException;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
+import top.xiaorang.springframework.beans.factory.config.BeanPostProcessor;
 import top.xiaorang.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author liulei
@@ -12,6 +17,8 @@ import top.xiaorang.springframework.beans.factory.config.ConfigurableBeanFactory
  * @date 2022/9/19 2:30
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
     @Override
     public Object getBean(String name) throws BeansException {
         return doGetBean(name, null);
@@ -20,6 +27,11 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     @Override
     public Object getBean(String name, Object... args) throws BeansException {
         return doGetBean(name, args);
+    }
+
+    @Override
+    public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
+        return (T) getBean(name);
     }
 
     /**
@@ -39,6 +51,19 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return (T) createBean(name, beanDefinition, args);
     }
 
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
+        // Remove from old position, if any
+        this.beanPostProcessors.remove(beanPostProcessor);
+        // Add to end of list
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
+
     /**
      * 根据bean名称获取bean定义信息
      *
@@ -51,11 +76,11 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     /**
      * 创建bean实例
      *
-     * @param name           bean名称
+     * @param beanName       bean名称
      * @param beanDefinition bean定义信息
      * @param args           bean构造器参数
      * @return bean实例
      * @throws BeansException 异常信息
      */
-    protected abstract Object createBean(String name, BeanDefinition beanDefinition, Object[] args) throws BeansException;
+    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException;
 }

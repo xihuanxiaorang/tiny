@@ -6,6 +6,7 @@ import top.xiaorang.springframework.beans.PropertyValue;
 import top.xiaorang.springframework.beans.PropertyValues;
 import top.xiaorang.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
+import top.xiaorang.springframework.beans.factory.config.BeanPostProcessor;
 import top.xiaorang.springframework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
@@ -21,16 +22,55 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
     @Override
-    protected Object createBean(String name, BeanDefinition beanDefinition, Object[] args) throws BeansException {
+    protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean;
         try {
-            bean = createBeanInstance(name, beanDefinition, args);
-            applyPropertyValues(name, beanDefinition, bean);
+            bean = createBeanInstance(beanName, beanDefinition, args);
+            applyPropertyValues(beanName, beanDefinition, bean);
+            bean = initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
-        addSingleton(name, bean);
+        addSingleton(beanName, bean);
         return bean;
+    }
+
+    private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+        Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+        invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        return wrappedBean;
+    }
+
+
+    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) {
+        //TODO 执行初始化方法
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessBeforeInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessAfterInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
     }
 
     /**
