@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean class="top.xiaorang.springframework.test.bean.UserDao"/>
+
+    <bean id="userService" class="top.xiaorang.springframework.test.bean.UserService">
+        <property name="userId" value="1003"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+</beans>
