@@ -17,6 +17,7 @@ import top.xiaorang.springframework.core.io.Resource;
 import top.xiaorang.springframework.core.io.ResourceLoader;
 import top.xiaorang.springframework.test.bean.UserDao;
 import top.xiaorang.springframework.test.bean.UserService;
+import top.xiaorang.springframework.test.event.CustomEvent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -130,5 +131,12 @@ public class ApiTest {
         System.out.println(userService2);
         System.out.println("userDao是否单例对象？" + (userService.getUserDao() == userService2.getUserDao() ? "是" : "否"));
         System.out.println("userService是否单例对象？" + (userService == userService2 ? "是" : "否"));
+    }
+
+    @Test
+    public void test_event() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springEvent.xml");
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 1019129009086763L, "成功了！"));
+        applicationContext.close();
     }
 }

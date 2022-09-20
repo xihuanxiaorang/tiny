@@ -10,5 +10,5 @@ import top.xiaorang.springframework.beans.factory.ListableBeanFactory;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 22:54
  */
-public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory {
+public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory, ApplicationEventPublisher {
 }

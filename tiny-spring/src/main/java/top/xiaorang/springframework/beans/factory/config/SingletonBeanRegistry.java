@@ -9,6 +9,14 @@ package top.xiaorang.springframework.beans.factory.config;
  */
 public interface SingletonBeanRegistry {
     /**
+     * 在给定的bean名称下，在bean注册表中将给定的现有对象注册为单例。
+     *
+     * @param beanName        bean名称
+     * @param singletonObject 单例对象
+     */
+    void registerSingleton(String beanName, Object singletonObject);
+
+    /**
      * 根据bean名称获取bean实例对象
      *
      * @param beanName bean名称

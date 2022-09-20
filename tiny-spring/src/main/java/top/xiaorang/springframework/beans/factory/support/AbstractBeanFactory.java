@@ -1,7 +1,6 @@
 package top.xiaorang.springframework.beans.factory.support;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import top.xiaorang.springframework.beans.BeansException;
 import top.xiaorang.springframework.beans.factory.DisposableBean;
@@ -9,6 +8,7 @@ import top.xiaorang.springframework.beans.factory.FactoryBean;
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
 import top.xiaorang.springframework.beans.factory.config.BeanPostProcessor;
 import top.xiaorang.springframework.beans.factory.config.ConfigurableBeanFactory;
+import top.xiaorang.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
-    private ClassLoader beanClassLoader = ClassUtil.getClassLoader();
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -86,7 +86,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     @Override
     public void setBeanClassLoader(ClassLoader beanClassLoader) {
-        this.beanClassLoader = (beanClassLoader != null ? beanClassLoader : ClassUtil.getClassLoader());
+        this.beanClassLoader = (beanClassLoader != null ? beanClassLoader : ClassUtils.getDefaultClassLoader());
     }
 
     public List<BeanPostProcessor> getBeanPostProcessors() {

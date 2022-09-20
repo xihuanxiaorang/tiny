@@ -1,6 +1,6 @@
 package top.xiaorang.springframework.core.io;
 
-import cn.hutool.core.util.ClassUtil;
+import top.xiaorang.springframework.util.ClassUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class ClassPathResource implements Resource {
 
     public ClassPathResource(String path, ClassLoader classLoader) {
         this.path = path;
-        this.classLoader = classLoader != null ? classLoader : ClassUtil.getClassLoader();
+        this.classLoader = classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader();
     }
 
     @Override

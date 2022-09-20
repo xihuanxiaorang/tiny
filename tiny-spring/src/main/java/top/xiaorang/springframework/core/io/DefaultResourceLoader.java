@@ -1,6 +1,6 @@
 package top.xiaorang.springframework.core.io;
 
-import cn.hutool.core.util.ClassUtil;
+import top.xiaorang.springframework.util.ClassUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,7 +40,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 
     @Override
     public ClassLoader getClassLoader() {
-        return (this.classLoader != null ? this.classLoader : ClassUtil.getClassLoader());
+        return (this.classLoader != null ? this.classLoader : ClassUtils.getDefaultClassLoader());
     }
 
     public void setClassLoader(ClassLoader classLoader) {

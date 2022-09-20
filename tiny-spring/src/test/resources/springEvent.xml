@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean class="top.xiaorang.springframework.test.event.ContextRefreshedEventListener"/>
+    <bean class="top.xiaorang.springframework.test.event.CustomEventListener"/>
+    <bean class="top.xiaorang.springframework.test.event.ContextClosedEventListener"/>
+</beans>
