@@ -10,6 +10,8 @@ import top.xiaorang.springframework.beans.factory.InitializingBean;
 import top.xiaorang.springframework.context.ApplicationContext;
 import top.xiaorang.springframework.context.ApplicationContextAware;
 
+import java.util.Random;
+
 /**
  * @author liulei
  * @description
@@ -17,7 +19,7 @@ import top.xiaorang.springframework.context.ApplicationContextAware;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 2:54
  */
-public class UserService implements InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, ApplicationContextAware {
+public class UserService implements IUserService, InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, ApplicationContextAware {
     private ApplicationContext applicationContext;
     private BeanFactory beanFactory;
     private String userId;
@@ -47,6 +49,26 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
 
     public void queryUserInfo() {
         System.out.println("查询用户信息：" + userDao.queryUserName(userId) + "," + company + "," + location);
+    }
+
+    @Override
+    public String queryUserDetail() {
+        try {
+            Thread.sleep(new Random(1).nextInt(100));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "小让，100001，深圳";
+    }
+
+    @Override
+    public String register(String userName) {
+        try {
+            Thread.sleep(new Random(1).nextInt(100));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "注册用户：" + userName + " success！";
     }
 
     public String getUserId() {

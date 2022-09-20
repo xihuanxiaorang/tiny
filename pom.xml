@@ -16,6 +16,8 @@
         <junit.version>4.13.2</junit.version>
         <cglib.version>3.3.0</cglib.version>
         <hutool.version>5.7.20</hutool.version>
+        <aspectj.version>1.9.9.1</aspectj.version>
+        <aopalliance.version>1.0</aopalliance.version>
     </properties>
 
     <dependencyManagement>
@@ -35,6 +37,16 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>aopalliance</groupId>
+                <artifactId>aopalliance</artifactId>
+                <version>${aopalliance.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
