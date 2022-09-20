@@ -31,6 +31,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public static final String NAME_ATTRIBUTE = "name";
     public static final String ID_ATTRIBUTE = "id";
     public static final String CLASS_ATTRIBUTE = "class";
+    public static final String SCOPE_ATTRIBUTE = "scope";
     public static final String INIT_METHOD_ATTRIBUTE = "init-method";
     public static final String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
     public static final String PROPERTY_ELEMENT = "property";
@@ -113,14 +114,17 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         getRegistry().registerBeanDefinition(beanName, beanDefinition);
     }
 
-    private void parseBeanDefinitionAttributes(Element ele, BeanDefinition beanDefinition) {
+    private void parseBeanDefinitionAttributes(Element ele, BeanDefinition bd) {
+        if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
+            bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
+        }
         if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
             String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
-            beanDefinition.setInitMethodName(initMethodName);
+            bd.setInitMethodName(initMethodName);
         }
         if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) {
             String destroyMethodName = ele.getAttribute(DESTROY_METHOD_ATTRIBUTE);
-            beanDefinition.setDestroyMethodName(destroyMethodName);
+            bd.setDestroyMethodName(destroyMethodName);
         }
     }
 

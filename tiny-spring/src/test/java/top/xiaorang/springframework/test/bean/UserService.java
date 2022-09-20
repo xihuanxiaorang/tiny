@@ -23,7 +23,7 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
     private String userId;
     private String location;
     private String company;
-    private UserDao userDao;
+    private IUserDao userDao;
 
     @Override
     public void destroy() throws Exception {
@@ -73,11 +73,11 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
         this.company = company;
     }
 
-    public UserDao getUserDao() {
+    public IUserDao getUserDao() {
         return userDao;
     }
 
-    public void setUserDao(UserDao userDao) {
+    public void setUserDao(IUserDao userDao) {
         this.userDao = userDao;
     }
 
@@ -97,5 +97,15 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public String toString() {
+        return "UserService{" +
+                "userId='" + userId + '\'' +
+                ", location='" + location + '\'' +
+                ", company='" + company + '\'' +
+                ", userDao=" + userDao +
+                '}';
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 5:52
  */
-public class UserDao {
+public class UserDao implements IUserDao {
     private static final Map<String, String> userMap = new HashMap<>();
 
     public void initDataMethod() {

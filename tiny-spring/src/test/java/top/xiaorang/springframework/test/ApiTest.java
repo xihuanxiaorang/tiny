@@ -119,4 +119,16 @@ public class ApiTest {
         System.out.println("ApplicationContextAware：" + userService.getApplicationContext());
         System.out.println("BeanFactoryAware：" + userService.getBeanFactory());
     }
+
+    @Test
+    public void test_scope() {
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        userService.queryUserInfo();
+        UserService userService2 = applicationContext.getBean("userService", UserService.class);
+        System.out.println(userService);
+        System.out.println(userService2);
+        System.out.println("userDao是否单例对象？" + (userService.getUserDao() == userService2.getUserDao() ? "是" : "否"));
+        System.out.println("userService是否单例对象？" + (userService == userService2 ? "是" : "否"));
+    }
 }

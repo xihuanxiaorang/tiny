@@ -10,10 +10,13 @@ import top.xiaorang.springframework.beans.PropertyValues;
  * @date 2022/9/19 1:31
  */
 public class BeanDefinition {
+    private static final String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
+    private static final String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
     private Class<?> beanClass;
     private PropertyValues propertyValues;
     private String initMethodName;
     private String destroyMethodName;
+    private String scope = SCOPE_SINGLETON;
 
     public BeanDefinition(Class<?> beanClass) {
         this.beanClass = beanClass;
@@ -23,6 +26,14 @@ public class BeanDefinition {
     public BeanDefinition(Class<?> beanClass, PropertyValues propertyValues) {
         this.beanClass = beanClass;
         this.propertyValues = propertyValues != null ? propertyValues : new PropertyValues();
+    }
+
+    public boolean isSingleton() {
+        return SCOPE_SINGLETON.equals(this.scope);
+    }
+
+    public boolean isPrototype() {
+        return SCOPE_PROTOTYPE.equals(this.scope);
     }
 
     public Class<?> getBeanClass() {
@@ -55,5 +66,13 @@ public class BeanDefinition {
 
     public void setDestroyMethodName(String destroyMethodName) {
         this.destroyMethodName = destroyMethodName;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }
