@@ -13,6 +13,7 @@ import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
 import top.xiaorang.springframework.beans.factory.config.BeanReference;
 import top.xiaorang.springframework.beans.factory.support.AbstractBeanDefinitionReader;
 import top.xiaorang.springframework.beans.factory.support.BeanDefinitionRegistry;
+import top.xiaorang.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import top.xiaorang.springframework.core.io.Resource;
 import top.xiaorang.springframework.core.io.ResourceLoader;
 
@@ -37,6 +38,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public static final String PROPERTY_ELEMENT = "property";
     public static final String REF_ATTRIBUTE = "ref";
     public static final String VALUE_ATTRIBUTE = "value";
+    public static final String COMPONENT_SCAN_ELEMENT = "component-scan";
+    public static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
 
     public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
         super(registry);
@@ -80,18 +83,40 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     protected void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException {
         Document document = XmlUtil.readXML(inputStream);
         Element root = document.getDocumentElement();
+        parseComponentScan(root);
         parseBeanDefinitions(root);
     }
 
-    private void parseBeanDefinitions(Element root) throws ClassNotFoundException {
-        NodeList nl = root.getChildNodes();
+    private void parseComponentScan(Element root) {
+        NodeList nl = root.getElementsByTagName(COMPONENT_SCAN_ELEMENT);
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node instanceof Element) {
-                Element ele = (Element) node;
-                if (BEAN_ELEMENT.equals(ele.getNodeName())) {
-                    processBeanDefinition(ele);
-                }
+                processComponentScan((Element) node);
+            }
+        }
+    }
+
+    private void processComponentScan(Element ele) {
+        String scanPath = ele.getAttribute(BASE_PACKAGE_ATTRIBUTE);
+        if (StrUtil.isEmpty(scanPath)) {
+            throw new BeansException("The value of base-package attribute can not be empty or null");
+        }
+        scanPackage(scanPath);
+    }
+
+    private void scanPackage(String scanPath) {
+        String[] basePackages = StrUtil.splitToArray(scanPath, ',');
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getRegistry());
+        scanner.scan(basePackages);
+    }
+
+    private void parseBeanDefinitions(Element root) throws ClassNotFoundException {
+        NodeList nl = root.getElementsByTagName(BEAN_ELEMENT);
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node node = nl.item(i);
+            if (node instanceof Element) {
+                processBeanDefinition((Element) node);
             }
         }
     }

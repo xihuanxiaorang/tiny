@@ -9,6 +9,7 @@ import top.xiaorang.springframework.beans.factory.DisposableBean;
 import top.xiaorang.springframework.beans.factory.InitializingBean;
 import top.xiaorang.springframework.context.ApplicationContext;
 import top.xiaorang.springframework.context.ApplicationContextAware;
+import top.xiaorang.springframework.stereotype.Component;
 
 import java.util.Random;
 
@@ -19,6 +20,7 @@ import java.util.Random;
  * @Copyright 博客：<a href="https://xiaorang.top">小让的糖果屋</a>  - show me the code
  * @date 2022/9/19 2:54
  */
+@Component
 public class UserService implements IUserService, InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, ApplicationContextAware {
     private ApplicationContext applicationContext;
     private BeanFactory beanFactory;
