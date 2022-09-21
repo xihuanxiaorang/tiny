@@ -11,6 +11,9 @@ public abstract class AbstractExpressionPointcut implements ExpressionPointcut {
     private String expression;
 
     public AbstractExpressionPointcut(String expression) {
+        if (expression == null) {
+            throw new IllegalStateException("Expression must not be null");
+        }
         this.expression = expression;
     }
 

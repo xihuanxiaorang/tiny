@@ -13,6 +13,10 @@ import top.xiaorang.springframework.aop.TargetSource;
  */
 public class AdvisedSupport {
     /**
+     * 是否基于类的代理，默认为 false
+     */
+    private boolean proxyTargetClass = false;
+    /**
      * 被代理的目标对象
      */
     private TargetSource targetSource;
@@ -28,10 +32,12 @@ public class AdvisedSupport {
     public AdvisedSupport() {
     }
 
-    public AdvisedSupport(TargetSource targetSource, MethodInterceptor methodInterceptor, MethodMatcher methodMatcher) {
-        this.targetSource = targetSource;
-        this.methodInterceptor = methodInterceptor;
-        this.methodMatcher = methodMatcher;
+    public boolean isProxyTargetClass() {
+        return proxyTargetClass;
+    }
+
+    public void setProxyTargetClass(boolean proxyTargetClass) {
+        this.proxyTargetClass = proxyTargetClass;
     }
 
     public TargetSource getTargetSource() {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean class="top.xiaorang.springframework.test.bean.UserDao" init-method="initDataMethod"
+          destroy-method="destroyDataMethod"/>
+
+    <bean id="userService" class="top.xiaorang.springframework.test.bean.UserService">
+        <property name="userId" value="1003"/>
+        <property name="location" value="深圳"/>
+        <property name="company" value="腾讯"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+    <bean class="top.xiaorang.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+    <bean id="userServiceBeforeAdvice" class="top.xiaorang.springframework.test.bean.UserServiceBeforeAdvice"/>
+
+    <bean id="methodBeforeAdviceInterceptor"
+          class="top.xiaorang.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor">
+        <property name="advice" ref="userServiceBeforeAdvice"/>
+    </bean>
+
+    <bean class="top.xiaorang.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
+        <property name="expression"
+                  value="execution(* top.xiaorang.springframework.test.bean.IUserService.*(..))"/>
+        <property name="advice" ref="methodBeforeAdviceInterceptor"/>
+    </bean>
+</beans>

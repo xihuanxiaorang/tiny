@@ -14,6 +14,7 @@ import top.xiaorang.springframework.beans.factory.config.AutowireCapableBeanFact
 import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
 import top.xiaorang.springframework.beans.factory.config.BeanPostProcessor;
 import top.xiaorang.springframework.beans.factory.config.BeanReference;
+import top.xiaorang.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -32,10 +33,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean;
         try {
-            bean = createBeanInstance(beanName, beanDefinition, args);
-            applyPropertyValues(beanName, beanDefinition, bean);
-            bean = initializeBean(beanName, bean, beanDefinition);
-        } catch (Exception e) {
+            bean = resolveBeforeInstantiation(beanName, beanDefinition);
+            if (bean != null) {
+                return bean;
+            }
+            bean = doCreateBean(beanName, beanDefinition, args);
+        } catch (BeansException e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
         // 注册实现了 DisposableBean 接口的 Bean 对象
@@ -44,6 +47,33 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             addSingleton(beanName, bean);
         }
         return bean;
+    }
+
+    protected Object doCreateBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
+        Object bean = createBeanInstance(beanName, beanDefinition, args);
+        applyPropertyValues(beanName, beanDefinition, bean);
+        bean = initializeBean(beanName, bean, beanDefinition);
+        return bean;
+    }
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition mbd) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(mbd.getBeanClass(), beanName);
+        if (bean != null) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        }
+        return bean;
+    }
+
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
