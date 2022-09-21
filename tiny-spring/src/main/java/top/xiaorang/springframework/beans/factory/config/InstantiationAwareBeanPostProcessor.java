@@ -1,6 +1,7 @@
 package top.xiaorang.springframework.beans.factory.config;
 
 import top.xiaorang.springframework.beans.BeansException;
+import top.xiaorang.springframework.beans.PropertyValues;
 
 /**
  * @author liulei
@@ -16,5 +17,9 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
     default boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
         return true;
+    }
+
+    default PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) throws BeansException {
+        return null;
     }
 }

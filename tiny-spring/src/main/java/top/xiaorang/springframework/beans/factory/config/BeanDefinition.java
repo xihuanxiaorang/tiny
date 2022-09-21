@@ -73,6 +73,9 @@ public class BeanDefinition {
     }
 
     public void setScope(String scope) {
+        if (!SCOPE_PROTOTYPE.equals(scope)) {
+            scope = SCOPE_SINGLETON;
+        }
         this.scope = scope;
     }
 }

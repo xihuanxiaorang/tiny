@@ -23,6 +23,11 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
     }
 
     public void scan(String... basePackages) {
+        doScan(basePackages);
+        AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
+    }
+
+    private void doScan(String[] basePackages) {
         Assert.notEmpty(basePackages, "At least one base package must be specified");
         for (String basePackage : basePackages) {
             Set<BeanDefinition> candidates = findCandidateComponents(basePackage);

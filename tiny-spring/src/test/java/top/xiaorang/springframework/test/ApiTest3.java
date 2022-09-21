@@ -18,6 +18,9 @@ public class ApiTest3 {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springScan.xml");
         IUserService userService = applicationContext.getBean("userService", IUserService.class);
         System.out.println("测试结果：" + userService.register("小星"));
+        System.out.println(userService);
+        IUserService userService1 = applicationContext.getBean("userService1", IUserService.class);
+        System.out.println(userService1);
     }
 
     @Test

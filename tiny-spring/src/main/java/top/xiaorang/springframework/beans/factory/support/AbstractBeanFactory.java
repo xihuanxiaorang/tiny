@@ -9,9 +9,11 @@ import top.xiaorang.springframework.beans.factory.config.BeanDefinition;
 import top.xiaorang.springframework.beans.factory.config.BeanPostProcessor;
 import top.xiaorang.springframework.beans.factory.config.ConfigurableBeanFactory;
 import top.xiaorang.springframework.util.ClassUtils;
+import top.xiaorang.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author liulei
@@ -22,6 +24,11 @@ import java.util.List;
  */
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+    /**
+     * String resolvers to apply e.g. to annotation attribute values.
+     */
+    private final List<StringValueResolver> embeddedValueResolvers = new CopyOnWriteArrayList<>();
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -87,6 +94,32 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     @Override
     public void setBeanClassLoader(ClassLoader beanClassLoader) {
         this.beanClassLoader = (beanClassLoader != null ? beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
+
+    @Override
+    public void addEmbeddedValueResolver(StringValueResolver valueResolver) {
+        Assert.notNull(valueResolver, "StringValueResolver must not be null");
+        this.embeddedValueResolvers.add(valueResolver);
+    }
+
+    @Override
+    public boolean hasEmbeddedValueResolver() {
+        return !this.embeddedValueResolvers.isEmpty();
+    }
+
+    @Override
+    public String resolveEmbeddedValue(String value) {
+        if (value == null) {
+            return null;
+        }
+        String result = value;
+        for (StringValueResolver resolver : this.embeddedValueResolvers) {
+            result = resolver.resolveStringValue(result);
+            if (result == null) {
+                return null;
+            }
+        }
+        return result;
     }
 
     public List<BeanPostProcessor> getBeanPostProcessors() {

@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
+    <bean class="top.xiaorang.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:config.properties"/>
+    </bean>
+
     <component-scan base-package="top.xiaorang.springframework.test.bean"/>
+
+    <bean id="userService1" class="top.xiaorang.springframework.test.bean.UserService">
+        <property name="userId" value="1003"/>
+        <property name="location" value="深圳"/>
+        <property name="company" value="腾讯"/>
+    </bean>
 </beans>

@@ -1,6 +1,7 @@
 package top.xiaorang.springframework.beans.factory.config;
 
 import top.xiaorang.springframework.beans.factory.HierarchicalBeanFactory;
+import top.xiaorang.springframework.util.StringValueResolver;
 
 /**
  * @author liulei
@@ -29,4 +30,25 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
      * 销毁单例bean对象
      */
     void destroySingletons();
+
+    /**
+     * Add a String resolver for embedded values such as annotation attributes.
+     *
+     * @param valueResolver the String resolver to apply to embedded values
+     */
+    void addEmbeddedValueResolver(StringValueResolver valueResolver);
+
+    /**
+     * Determine whether an embedded value resolver has been registered with this
+     * bean factory, to be applied through {@link #resolveEmbeddedValue(String)}.
+     */
+    boolean hasEmbeddedValueResolver();
+
+    /**
+     * Resolve the given embedded value, e.g. an annotation attribute.
+     *
+     * @param value the value to resolve
+     * @return the resolved value (may be the original value as-is)
+     */
+    String resolveEmbeddedValue(String value);
 }

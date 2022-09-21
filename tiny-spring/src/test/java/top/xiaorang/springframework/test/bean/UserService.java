@@ -7,6 +7,8 @@ import top.xiaorang.springframework.beans.factory.BeanFactoryAware;
 import top.xiaorang.springframework.beans.factory.BeanNameAware;
 import top.xiaorang.springframework.beans.factory.DisposableBean;
 import top.xiaorang.springframework.beans.factory.InitializingBean;
+import top.xiaorang.springframework.beans.factory.annotation.Autowired;
+import top.xiaorang.springframework.beans.factory.annotation.Value;
 import top.xiaorang.springframework.context.ApplicationContext;
 import top.xiaorang.springframework.context.ApplicationContextAware;
 import top.xiaorang.springframework.stereotype.Component;
@@ -25,8 +27,11 @@ public class UserService implements IUserService, InitializingBean, DisposableBe
     private ApplicationContext applicationContext;
     private BeanFactory beanFactory;
     private String userId;
+    @Value("${location}")
     private String location;
+    @Value("${company}")
     private String company;
+    @Autowired
     private IUserDao userDao;
 
     @Override

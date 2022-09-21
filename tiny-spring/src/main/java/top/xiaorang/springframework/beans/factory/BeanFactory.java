@@ -39,4 +39,6 @@ public interface BeanFactory {
      * @throws BeansException 异常信息
      */
     <T> T getBean(String name, Class<T> requiredType) throws BeansException;
+
+    <T> T getBean(Class<T> requiredType) throws BeansException;
 }
