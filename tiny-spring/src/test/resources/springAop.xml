@@ -12,6 +12,10 @@
 
     <bean class="top.xiaorang.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
+    <bean class="top.xiaorang.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:config.properties"/>
+    </bean>
+
     <bean id="userServiceBeforeAdvice" class="top.xiaorang.springframework.test.bean.UserServiceBeforeAdvice"/>
 
     <bean id="methodBeforeAdviceInterceptor"

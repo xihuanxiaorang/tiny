@@ -73,6 +73,7 @@ public class ApiTest2 {
     public void test_aop() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springAop.xml");
         IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        System.out.println(userService);
         System.out.println("测试结果：" + userService.register("小星"));
     }
 }

@@ -1,5 +1,7 @@
 package top.xiaorang.springframework.aop;
 
+import top.xiaorang.springframework.util.ClassUtils;
+
 /**
  * @author liulei
  * @description 被代理的目标对象
@@ -15,11 +17,11 @@ public class TargetSource {
     }
 
     public Class<?>[] getTargetInterfaces() {
-        return this.target.getClass().getInterfaces();
+        return this.getTargetClass().getInterfaces();
     }
 
     public Class<?> getTargetClass() {
-        return this.target.getClass();
+        return ClassUtils.getUserClass(this.target.getClass());
     }
 
     public Object getTarget() throws Exception {

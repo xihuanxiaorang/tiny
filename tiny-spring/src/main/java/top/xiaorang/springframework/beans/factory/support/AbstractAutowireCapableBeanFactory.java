@@ -51,10 +51,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     protected Object doCreateBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean = createBeanInstance(beanName, beanDefinition, args);
-        applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
-        applyPropertyValues(beanName, beanDefinition, bean);
+        populateBean(beanName, beanDefinition, bean);
         bean = initializeBean(beanName, bean, beanDefinition);
         return bean;
+    }
+
+    private void populateBean(String beanName, BeanDefinition beanDefinition, Object bean) {
+        if (!applyBeanPostProcessorsBeforeInstantiation(beanName, bean)) return;
+        applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
+        applyPropertyValues(beanName, beanDefinition, bean);
+    }
+
+    private boolean applyBeanPostProcessorsBeforeInstantiation(String beanName, Object bean) {
+        for (BeanPostProcessor bp : getBeanPostProcessors()) {
+            if (bp instanceof InstantiationAwareBeanPostProcessor) {
+                if (!((InstantiationAwareBeanPostProcessor) bp).postProcessAfterInstantiation(bean, beanName)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void applyBeanPostProcessorsBeforeApplyingPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {

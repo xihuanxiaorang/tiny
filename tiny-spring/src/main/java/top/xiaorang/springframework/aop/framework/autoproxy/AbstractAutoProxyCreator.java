@@ -13,6 +13,7 @@ import top.xiaorang.springframework.beans.factory.BeanFactory;
 import top.xiaorang.springframework.beans.factory.BeanFactoryAware;
 import top.xiaorang.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import top.xiaorang.springframework.beans.factory.support.DefaultListableBeanFactory;
+import top.xiaorang.springframework.util.ClassUtils;
 
 import java.util.Collection;
 
@@ -27,29 +28,24 @@ public abstract class AbstractAutoProxyCreator implements InstantiationAwareBean
     private DefaultListableBeanFactory beanFactory;
 
     @Override
-    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
-        if (isInfrastructureClass(beanClass)) {
-            return null;
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        Class<?> clazz = ClassUtils.getUserClass(bean);
+        if (isInfrastructureClass(clazz)) {
+            return bean;
         }
         // TODO 这里与Spring官方源码中有点不一样
         Collection<AspectJExpressionPointcutAdvisor> advisors = this.beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
         for (AspectJExpressionPointcutAdvisor advisor : advisors) {
             ClassFilter classFilter = advisor.getPointcut().getClassFilter();
-            if (!classFilter.matches(beanClass)) continue;
+            if (!classFilter.matches(clazz)) continue;
             ProxyFactory proxyFactory = new ProxyFactory();
             proxyFactory.setProxyTargetClass(false);
             proxyFactory.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
             proxyFactory.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
-            TargetSource targetSource = null;
-            try {
-                targetSource = new TargetSource(beanClass.getDeclaredConstructor().newInstance());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            proxyFactory.setTargetSource(targetSource);
+            proxyFactory.setTargetSource(new TargetSource(bean));
             return proxyFactory.getProxy();
         }
-        return null;
+        return bean;
     }
 
     protected boolean isInfrastructureClass(Class<?> beanClass) {
