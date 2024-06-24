@@ -14,15 +14,24 @@ import fun.xiaorang.tiny.springframework.beans.factory.config.BeanDefinition;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
   @Override
   public Object getBean(final String beanName) throws BeansException {
+    return doGetBean(beanName, null);
+  }
+
+  @Override
+  public Object getBean(final String beanName, final Object... args) throws BeansException {
+    return doGetBean(beanName, args);
+  }
+
+  protected Object doGetBean(final String beanName, final Object[] args) throws BeansException {
     final Object bean = getSingleton(beanName);
     if (bean != null) {
       return bean;
     }
     final BeanDefinition beanDefinition = getBeanDefinition(beanName);
-    return createBean(beanName, beanDefinition);
+    return createBean(beanName, beanDefinition, args);
   }
 
   protected abstract BeanDefinition getBeanDefinition(final String beanName);
 
-  protected abstract Object createBean(final String beanName, final BeanDefinition beanDefinition);
+  protected abstract Object createBean(final String beanName, final BeanDefinition beanDefinition, final Object[] args);
 }

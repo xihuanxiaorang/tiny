@@ -12,4 +12,10 @@
     <artifactId>tiny-spring</artifactId>
     <description>手撸Spring源码专栏</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+    </dependencies>
 </project>
