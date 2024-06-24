@@ -1,0 +1,14 @@
+package fun.xiaorang.tiny.springframework.beans.factory.config;
+
+/**
+ * @author xiaorang
+ * @description <p style = " font-weight:bold ; "><p/>
+ * @github <a href="https://github.com/xihuanxiaorang/tiny">tiny</a>
+ * @Copyright 博客：<a href="https://docs.xiaorang.fun">小让的糖果屋</a>  - show me the code
+ * @date 2024/06/23 23:17
+ */
+public interface SingletonBeanRegistry {
+  void registerSingleton(String beanName, Object singletonObject);
+
+  Object getSingleton(String beanName);
+}
