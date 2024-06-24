@@ -1,7 +1,10 @@
 package fun.xiaorang.tiny.springframework.beans.factory.support;
 
+import cn.hutool.core.bean.BeanUtil;
 import fun.xiaorang.tiny.springframework.beans.BeansException;
+import fun.xiaorang.tiny.springframework.beans.PropertyValue;
 import fun.xiaorang.tiny.springframework.beans.factory.config.BeanDefinition;
+import fun.xiaorang.tiny.springframework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
 
@@ -24,11 +27,27 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     Object bean;
     try {
       bean = createBeanInstance(beanName, beanDefinition, args);
+      applyPropertyValues(beanName, bean, beanDefinition);
     } catch (BeansException e) {
       throw new BeansException("Instantiation of bean failed", e);
     }
     registerSingleton(beanName, bean);
     return bean;
+  }
+
+  protected void applyPropertyValues(final String beanName, final Object bean, final BeanDefinition beanDefinition) {
+    try {
+      for (final PropertyValue propertyValue : beanDefinition.getPropertyValues().getPropertyValues()) {
+        final String name = propertyValue.getName();
+        Object value = propertyValue.getValue();
+        if (value instanceof final BeanReference beanReference) {
+          value = getBean(beanReference.getBeanName());
+        }
+        BeanUtil.setFieldValue(bean, name, value);
+      }
+    } catch (Exception e) {
+      throw new BeansException("Error setting property values：" + beanName);
+    }
   }
 
   protected Object createBeanInstance(final String beanName, final BeanDefinition beanDefinition, final Object[] args) {

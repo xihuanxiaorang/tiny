@@ -8,21 +8,26 @@ package fun.xiaorang.tiny.springframework.test.bean;
  * @date 2024/06/23 23:43
  */
 public class UserService {
-  private String name;
-
-  public UserService() {
-  }
-
-  public UserService(final String name) {
-    this.name = name;
-  }
+  private String userId;
+  private UserDao userDao;
 
   public void queryUserInfo() {
-    System.out.println("查询用户信息：" + name);
+    System.out.println("查询用户信息：" + userDao.queryUserName(userId));
   }
 
-  @Override
-  public String toString() {
-    return "UserService{" + "name='" + name + '\'' + '}';
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(final String userId) {
+    this.userId = userId;
+  }
+
+  public UserDao getUserDao() {
+    return userDao;
+  }
+
+  public void setUserDao(final UserDao userDao) {
+    this.userDao = userDao;
   }
 }
