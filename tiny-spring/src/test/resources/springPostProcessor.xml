@@ -8,4 +8,7 @@
         <property name="location" value="深圳"/>
         <property name="userDao" ref="userDao"/>
     </bean>
+
+    <bean class="fun.xiaorang.tiny.springframework.test.common.MyBeanFactoryPostProcessor"/>
+    <bean class="fun.xiaorang.tiny.springframework.test.common.MyBeanPostProcessor"/>
 </beans>

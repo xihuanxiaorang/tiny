@@ -10,4 +10,7 @@ import fun.xiaorang.tiny.springframework.beans.factory.BeanFactory;
  * @date 2024/06/25 13:01
  */
 public interface AutowireCapableBeanFactory extends BeanFactory {
+  Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName);
+
+  Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName);
 }

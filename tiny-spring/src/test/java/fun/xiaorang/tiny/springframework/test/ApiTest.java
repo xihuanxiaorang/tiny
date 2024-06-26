@@ -4,15 +4,21 @@ import cn.hutool.core.io.IoUtil;
 import fun.xiaorang.tiny.springframework.beans.PropertyValue;
 import fun.xiaorang.tiny.springframework.beans.PropertyValues;
 import fun.xiaorang.tiny.springframework.beans.factory.config.BeanDefinition;
+import fun.xiaorang.tiny.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import fun.xiaorang.tiny.springframework.beans.factory.config.BeanPostProcessor;
 import fun.xiaorang.tiny.springframework.beans.factory.config.BeanReference;
 import fun.xiaorang.tiny.springframework.beans.factory.support.BeanDefinitionReader;
 import fun.xiaorang.tiny.springframework.beans.factory.support.DefaultListableBeanFactory;
 import fun.xiaorang.tiny.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import fun.xiaorang.tiny.springframework.context.ApplicationContext;
+import fun.xiaorang.tiny.springframework.context.support.ClassPathXmlApplicationContext;
 import fun.xiaorang.tiny.springframework.core.io.DefaultResourceLoader;
 import fun.xiaorang.tiny.springframework.core.io.Resource;
 import fun.xiaorang.tiny.springframework.core.io.ResourceLoader;
 import fun.xiaorang.tiny.springframework.test.bean.UserDao;
 import fun.xiaorang.tiny.springframework.test.bean.UserService;
+import fun.xiaorang.tiny.springframework.test.common.MyBeanFactoryPostProcessor;
+import fun.xiaorang.tiny.springframework.test.common.MyBeanPostProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -92,6 +98,40 @@ public class ApiTest {
 
     // 3. 获取 UserService Bean
     final UserService userService = beanFactory.getBean("userService", UserService.class);
+    String result = userService.queryUserInfo();
+    System.out.println("测试结果：" + result);
+  }
+
+  @Test
+  public void test_BeanFactoryPostProcessorAndBeanPostProcessor() {
+    // 初始化 BeanFactory
+    final DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+    // 读取xml配置文件&注册BeanDefinition
+    final BeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory, resourceLoader);
+    beanDefinitionReader.loadBeanDefinitions("classpath:spring.xml");
+
+    // BeanDefinition 加载完成 & Bean实例化之前，执行 BeanFactory 后置处理器用于修改 BeanDefinition 的属性值
+    final BeanFactoryPostProcessor beanFactoryPostProcessor = new MyBeanFactoryPostProcessor();
+    beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+
+    // 注册 BeanPostProcessor，用于在 Bean 初始化前后进行额外的处理
+    final BeanPostProcessor beanPostProcessor = new MyBeanPostProcessor();
+    beanFactory.addBeanPostProcessor(beanPostProcessor);
+
+    // 获取 UserService Bean
+    final UserService userService = beanFactory.getBean("userService", UserService.class);
+    String result = userService.queryUserInfo();
+    System.out.println("测试结果：" + result);
+  }
+
+  @Test
+  public void test_Xml2() {
+    // 初始化 ApplicationContext BeanFactory
+    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
+
+    // 获取 UserService Bean
+    final UserService userService = applicationContext.getBean("userService", UserService.class);
     String result = userService.queryUserInfo();
     System.out.println("测试结果：" + result);
   }

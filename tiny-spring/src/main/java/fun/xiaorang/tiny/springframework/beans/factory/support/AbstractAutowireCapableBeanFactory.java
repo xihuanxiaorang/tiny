@@ -3,7 +3,9 @@ package fun.xiaorang.tiny.springframework.beans.factory.support;
 import cn.hutool.core.bean.BeanUtil;
 import fun.xiaorang.tiny.springframework.beans.BeansException;
 import fun.xiaorang.tiny.springframework.beans.PropertyValue;
+import fun.xiaorang.tiny.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import fun.xiaorang.tiny.springframework.beans.factory.config.BeanDefinition;
+import fun.xiaorang.tiny.springframework.beans.factory.config.BeanPostProcessor;
 import fun.xiaorang.tiny.springframework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
@@ -15,7 +17,7 @@ import java.lang.reflect.Constructor;
  * @Copyright 博客：<a href="https://docs.xiaorang.fun">小让的糖果屋</a>  - show me the code
  * @date 2024/06/23 23:24
  */
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
   private InstantiationStrategy instantiationStrategy;
 
   public AbstractAutowireCapableBeanFactory() {
@@ -28,12 +30,51 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     try {
       bean = createBeanInstance(beanName, beanDefinition, args);
       applyPropertyValues(beanName, bean, beanDefinition);
+      bean = initializeBean(beanName, bean, beanDefinition);
     } catch (BeansException e) {
       throw new BeansException("Instantiation of bean failed", e);
     }
     registerSingleton(beanName, bean);
     return bean;
   }
+
+  @Override
+  public Object applyBeanPostProcessorsBeforeInitialization(final Object existingBean, final String beanName) {
+    Object result = existingBean;
+    for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+      Object current = beanPostProcessor.postProcessBeforeInitialization(result, beanName);
+      if (current == null) {
+        return result;
+      }
+      result = current;
+    }
+    return result;
+  }
+
+  @Override
+  public Object applyBeanPostProcessorsAfterInitialization(final Object existingBean, final String beanName) {
+    Object result = existingBean;
+    for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+      Object current = beanPostProcessor.postProcessAfterInitialization(result, beanName);
+      if (current == null) {
+        return result;
+      }
+      result = current;
+    }
+    return result;
+  }
+
+  protected Object initializeBean(final String beanName, final Object bean, final BeanDefinition beanDefinition) {
+    Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+    invokeInitMethods(beanName, wrappedBean, beanDefinition);
+    wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+    return wrappedBean;
+  }
+
+  private void invokeInitMethods(final String beanName, final Object wrappedBean, final BeanDefinition beanDefinition) {
+
+  }
+
 
   protected void applyPropertyValues(final String beanName, final Object bean, final BeanDefinition beanDefinition) {
     try {

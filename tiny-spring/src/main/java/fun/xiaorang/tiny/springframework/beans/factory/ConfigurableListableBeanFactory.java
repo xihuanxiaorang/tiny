@@ -14,4 +14,6 @@ import fun.xiaorang.tiny.springframework.beans.factory.config.ConfigurableBeanFa
  */
 public interface ConfigurableListableBeanFactory extends ConfigurableBeanFactory, ListableBeanFactory, AutowireCapableBeanFactory {
   BeanDefinition getBeanDefinition(String beanName) throws BeansException;
+
+  void preInstantiateSingletons() throws BeansException;
 }

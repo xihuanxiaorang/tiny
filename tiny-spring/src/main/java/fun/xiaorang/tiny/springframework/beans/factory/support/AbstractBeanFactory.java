@@ -1,8 +1,12 @@
 package fun.xiaorang.tiny.springframework.beans.factory.support;
 
 import fun.xiaorang.tiny.springframework.beans.BeansException;
-import fun.xiaorang.tiny.springframework.beans.factory.BeanFactory;
 import fun.xiaorang.tiny.springframework.beans.factory.config.BeanDefinition;
+import fun.xiaorang.tiny.springframework.beans.factory.config.BeanPostProcessor;
+import fun.xiaorang.tiny.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xiaorang
@@ -11,7 +15,9 @@ import fun.xiaorang.tiny.springframework.beans.factory.config.BeanDefinition;
  * @Copyright 博客：<a href="https://docs.xiaorang.fun">小让的糖果屋</a>  - show me the code
  * @date 2024/06/23 23:17
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+  private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
   @Override
   public Object getBean(final String beanName) throws BeansException {
     return doGetBean(beanName, null);
@@ -26,6 +32,16 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
   @Override
   public <T> T getBean(final String name, final Class<T> requiredType) throws BeansException {
     return (T) getBean(name);
+  }
+
+  @Override
+  public void addBeanPostProcessor(final BeanPostProcessor beanPostProcessor) {
+    this.beanPostProcessors.remove(beanPostProcessor);
+    this.beanPostProcessors.add(beanPostProcessor);
+  }
+
+  public List<BeanPostProcessor> getBeanPostProcessors() {
+    return this.beanPostProcessors;
   }
 
   @SuppressWarnings("unchecked")
